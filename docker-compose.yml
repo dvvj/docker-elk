@@ -30,6 +30,14 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
+        source: ./logstash/jar/mysql-connector-java-8.0.18.jar
+        target: /usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-8.0.18.jar
+        read_only: true
+      - type: bind
+        source: ./logstash/config/jvm.options
+        target: /usr/share/logstash/config/jvm.options
+        read_only: true
+      - type: bind
         source: ./logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
@@ -41,7 +49,7 @@ services:
       - "5000:5000"
       - "9600:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_JAVA_OPTS: "-Xmx2048m -Xms2048m"
     networks:
       - elk
     depends_on:

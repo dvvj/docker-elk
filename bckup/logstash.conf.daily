@@ -1,0 +1,25 @@
+input {
+    jdbc {
+	tags => "daily_deposit"
+        jdbc_connection_string => "jdbc:mysql://10.0.2.15:3306/esd"
+        jdbc_user => "dbuser"
+        jdbc_password => "dbpass"
+        schedule => "* * * * *"
+        jdbc_validate_connection => true
+        jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+        statement => "select * from rec_stats_deposit_daily"
+    }
+}
+## Add your filters / logstash plugins configuration here
+
+output {
+    if "daily_deposit" in [tags] {
+	elasticsearch {
+		hosts => "elasticsearch:9200"
+		user => "elastic"
+		password => "changeme"
+		index => "personal_daily_deposit"
+		document_id => "%{id}"
+	}
+    }
+}

@@ -1,0 +1,26 @@
+input {
+    jdbc {
+        tags => "daily_merged"
+        jdbc_connection_string => "jdbc:mysql://10.0.2.15:3306/esd"
+        jdbc_user => "dbuser"
+        jdbc_password => "dbpass"
+        schedule => "55 * * * *"
+        jdbc_validate_connection => true
+        jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+        statement => "select d.act_count as dcount, d.max as dmax, d.min as dmin, d.avg as davg, d.sum as dsum, w.act_count as wcount, w.max as wmax, w.min as wmin, w.avg as wavg, w.sum as wsum from rec_stats_deposit_daily d left outer join rec_stats_withdrawal_daily w on d.name = w.name and d.`date` = w.`date` union select d.act_count as dcount, d.max as dmax, d.min as dmin, d.avg as davg, d.sum as dsum, w.act_count as wcount, w.max as wmax, w.min as wmin, w.avg as wavg, w.sum as wsum from rec_stats_deposit_daily d right outer join rec_stats_withdrawal_daily w on d.name = w.name and d.`date` = w.`date`"
+    }
+}
+## Add your filters / logstash plugins configuration here
+
+output {
+    if "daily_merged" in [tags] {
+        elasticsearch {
+                hosts => "elasticsearch:9200"
+                user => "elastic"
+                password => "changeme"
+                index => "personal_daily_merged"
+                document_id => "%{id}"
+        }
+    }
+}   
+

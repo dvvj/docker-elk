@@ -1,6 +1,6 @@
 input {
     jdbc {
-        tags => "bgp_orders_no_record"
+        tags => "bgp_ovw_orders_no_record"
         jdbc_connection_string => "jdbc:mysql://10.0.2.15:3306/esd"
         jdbc_user => "dbuser"
         jdbc_password => "dbpass"
@@ -15,12 +15,12 @@ input {
 ## Add your filters / logstash plugins configuration here
 
 output {
-    if "bgp_orders_no_record" in [tags] {
+    if "bgp_ovw_orders_no_record" in [tags] {
         elasticsearch {
                 hosts => "elasticsearch:9200"
                 user => "elastic"
                 password => "changeme"
-                index => "bgp_orders_no_record"
+                index => "bgp_ovw_orders_no_record"
                 document_id => "%{id}"
         }
     }

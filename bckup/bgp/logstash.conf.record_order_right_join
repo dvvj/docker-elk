@@ -1,0 +1,27 @@
+input {
+    jdbc {
+        tags => "bgp_orders_no_record"
+        jdbc_connection_string => "jdbc:mysql://10.0.2.15:3306/esd"
+        jdbc_user => "dbuser"
+        jdbc_password => "dbpass"
+        schedule => "0 * * * *"
+        jdbc_validate_connection => true
+	jdbc_paging_enabled => true
+	jdbc_page_size => 100000
+        jdbc_driver_class => "com.mysql.cj.jdbc.Driver"
+	statement => "select * from order_from_site orders where record_id is null order by id"
+    }
+}
+## Add your filters / logstash plugins configuration here
+
+output {
+    if "bgp_orders_no_record" in [tags] {
+        elasticsearch {
+                hosts => "elasticsearch:9200"
+                user => "elastic"
+                password => "changeme"
+                index => "bgp_orders_no_record"
+                document_id => "%{id}"
+        }
+    }
+}

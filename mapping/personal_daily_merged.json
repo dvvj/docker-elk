@@ -1,0 +1,10 @@
+{
+  "index_patterns": ["personal_daily_merged*"],
+  "mappings": {
+    "properties": {
+      "date_str": {
+        "type": "keyword"
+      }
+    }
+  }
+}
